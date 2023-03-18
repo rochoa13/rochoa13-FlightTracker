@@ -52,8 +52,11 @@ public class FlightService {
      * @return the newly added flight if the add operation was successful, including the flight_id. We do this to
      *         inform our provide the front-end client with information about the added Flight.
      */
-    public Flight addFlight(Flight flight){
-        return null;
+    public Flight addFlight(Flight flight){ //transient, no id yet
+        Flight persistedFlight = flightDAO.insertFlight(flight);
+        
+        //persisted flight, with id
+        return persistedFlight;
     }
 
     /**
@@ -70,17 +73,27 @@ public class FlightService {
      *         user should have some insight if they attempted to edit a nonexistent flight.)
      */
     public Flight updateFlight(int flight_id, Flight flight){
-        return null;
+        Flight updatedFlight; //creating new updated Flight object
+        
+        if(flightDAO.getFlightById(flight_id) != null){ //checks if the a flight exists
+            flightDAO.updateFlight(flight_id, flight); //if it does exist, update with flight id passed in
+        }
+        else{
+            return null;
+        }
+        updatedFlight = flightDAO.getFlightById(flight_id); //updating the Flight object with the new id
+        
+        return updatedFlight;
     }
 
     /**
      * TODO: Use the FlightDAO to retrieve a List containing all flights.
      * You could use the flightDAO.getAllFlights method.
      *
-     * @return all flights in the database.
+     * @return List<Flight> - all flights in the database.
      */
     public List<Flight> getAllFlights() {
-        return null;
+        return flightDAO.getAllFlights(); // calling getAllFlights method from FlightDAO file, and returning the contents
     }
 
     /**
@@ -92,6 +105,7 @@ public class FlightService {
      * @return all flights departing from departure_city and arriving at arrival_city.
      */
     public List<Flight> getAllFlightsFromCityToCity(String departure_city, String arrival_city) {
-        return null;
+        
+        return flightDAO.getAllFlightsFromCityToCity(departure_city, arrival_city);
     }
 }
